@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func GetoffsetFormHead(header http.Header) int64 {
+func GetOffsetFromHeader(header http.Header) int64 {
 	byteRange := header.Get("range")
 	if len(byteRange) < 7 {
 		return 0
@@ -28,6 +28,7 @@ func GetoffsetFormHead(header http.Header) int64 {
 	return offset
 }
 
+// 获取对象散列值的Base64编码
 func GetHashFromHeader(header http.Header) string {
 	digest := header.Get("digest")
 	if !strings.HasPrefix(digest, "SHA-256=") {
@@ -36,6 +37,7 @@ func GetHashFromHeader(header http.Header) string {
 	return digest[8:]
 }
 
+// 获取对象数据的长度
 func GetSizeFromHeader(header http.Header) int64 {
 	sizeStr := header.Get("content-length")
 	if sizeStr == "" {

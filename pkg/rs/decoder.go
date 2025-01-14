@@ -6,6 +6,7 @@ import (
 	"github.com/klauspost/reedsolomon"
 )
 
+// 自定义数据源，实现数据恢复与读取
 type decoder struct {
 	readers   []io.Reader
 	writers   []io.Writer
@@ -21,6 +22,7 @@ func NewDecoder(readers []io.Reader, writers []io.Writer, size int64) *decoder {
 	return &decoder{readers: readers, writers: writers, encode: encode, size: size}
 }
 
+// 实现Read方法，在io.Copy调用 Read() 方法 中将数据写入 p 后，传输给 dst Write
 func (d *decoder) Read(p []byte) (count int, err error) {
 	if d.cacheSize == 0 {
 		err = d.getData()

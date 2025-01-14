@@ -10,7 +10,7 @@ func ChooseRandomDataServers(n int, exclude map[int]string) (dataServers []strin
 	for id, address := range exclude {
 		reverseExcludeMap[address] = id
 	}
-
+	// 获取存活的 数据服务
 	servers := GetDataServers()
 	for i := range servers {
 		server := servers[i]

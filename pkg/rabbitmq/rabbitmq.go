@@ -96,7 +96,6 @@ func (q *RabbitMQ) Publish(exchange string, body interface{}) {
 	if err != nil {
 		panic(err)
 	}
-
 }
 
 // 消费队列的消息

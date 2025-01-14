@@ -24,7 +24,9 @@ func newGetStream(url string) (*GetStream, error) {
 	return &GetStream{result.Body}, nil
 }
 
+// 对象读取流
 // 根据server 和 object 构造url，访问获取返回体，封装为GetStream
+// 获取 数据节点的 对象数据分片
 func NewGetStream(server, object string) (*GetStream, error) {
 	if server == "" || object == "" {
 		return nil, fmt.Errorf("invalid server %s object %s", server, object)

@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// 当接口服务数据验证一致后，调用将临时文件转正
 func put(w http.ResponseWriter, r *http.Request) {
 	uuid := strings.Split(r.URL.EscapedPath(), "/")[2]
 	temp_info, err := readFromFile(uuid)

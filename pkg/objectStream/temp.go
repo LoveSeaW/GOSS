@@ -8,11 +8,11 @@ import (
 )
 
 type TempPutStream struct {
-	Server string
-	Uuid   string
+	Server string // 数据节点服务
+	Uuid   string // 数据节点中临时文件的uuid
 }
 
-// 提供POST请求,获取对应的 uuid，构建 TempPutStream
+// 在 数据服务节点上创建临时文件，获取临时文件的uuid
 func NewTempPutStream(server, object string, size int64) (*TempPutStream, error) {
 	request, err := http.NewRequest("POST", "http://"+server+"/temp/"+object, nil)
 	if err != nil {
@@ -34,7 +34,7 @@ func NewTempPutStream(server, object string, size int64) (*TempPutStream, error)
 	return &TempPutStream{Server: server, Uuid: string(uuid)}, nil
 }
 
-// 提供PTATCH 请求，主要用于对资源进行部分更新
+// 将 对象数据碎片 写入临时文件 数据服务
 func (w *TempPutStream) Write(p []byte) (n int, err error) {
 	request, err := http.NewRequest("PATCH", "http://"+w.Server+"/temp"+w.Uuid, strings.NewReader(string(p)))
 	if err != nil {
@@ -53,7 +53,8 @@ func (w *TempPutStream) Write(p []byte) (n int, err error) {
 	return len(p), err
 }
 
-// 根据 good 选择是否修改或者删除
+// Put 方法 将临时对象转正
+// Delete 方法 将临时对象删除
 func (w *TempPutStream) Commit(good bool) {
 	method := http.MethodDelete
 	if good {

@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// 将 http正文 写入 临时文件，将数据写入临时文件
 func patch(w http.ResponseWriter, r *http.Request) {
 	uuid := strings.Split(r.URL.EscapedPath(), "/")[2]
 	temp_info, err := readFromFile(uuid)

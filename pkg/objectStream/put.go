@@ -12,6 +12,7 @@ type PutStream struct {
 }
 
 func NewPutStream(server, object string) *PutStream {
+	// 使用 流式传输
 	reader, writer := io.Pipe()
 	channel := make(chan error)
 	go func() {

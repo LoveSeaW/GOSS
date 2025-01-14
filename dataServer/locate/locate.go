@@ -14,12 +14,12 @@ import (
 
 var objects = make(map[string]int)
 
-var mutex sync.Mutex
+var mutex sync.RWMutex
 
 func Locate(hash string) int {
-	mutex.Lock()
+	mutex.RLock()
 	id, ok := objects[hash]
-	mutex.Unlock()
+	mutex.RUnlock()
 	if !ok {
 		return -1
 	}
@@ -39,6 +39,7 @@ func Del(hash string) {
 	mutex.Unlock()
 }
 
+// 如果 消息队列传递对象文件信息，在本节点，则使用消息单发通知接口服务节点
 func StartLocate() {
 	queue := rabbitmq.New(os.Getenv("RABBITMQ_SERVER"))
 	defer queue.Close()

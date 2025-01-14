@@ -9,9 +9,11 @@ import (
 	"time"
 )
 
+// 全局缓存， 保存存活的节点， 在接口服务开启时获取
 var dataServers = make(map[string]time.Time)
-var mutex sync.Mutex
+var mutex sync.RWMutex // 使用读写锁
 
+// 检查 数据服务心跳， 维护 dataServers 列表
 func ListenHeartBeat() {
 	queue := rabbitmq.New(os.Getenv("RABBITMQ_SERVER"))
 	defer queue.Close()
@@ -21,6 +23,7 @@ func ListenHeartBeat() {
 	// 轮询 移除超时节点
 	go removeExpireDataServer()
 
+	// 接收 数据服务 发送到 apiServers 交换机的信息 即服务地址
 	for message := range consume {
 		// strconv.Unqupte 移除 引号和转义字符
 		dataServer, err := strconv.Unquote(string(message.Body))
@@ -49,10 +52,10 @@ func removeExpireDataServer() {
 
 // 获取所有存活的数据服务节点
 func GetDataServers() []string {
-	mutex.Lock()
-	defer mutex.Unlock()
+	mutex.RLock()
+	defer mutex.RUnlock()
 	dataServer := make([]string, 0)
-	for server, _ := range dataServers {
+	for server := range dataServers {
 		dataServer = append(dataServer, server)
 	}
 	return dataServer

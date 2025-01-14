@@ -15,7 +15,7 @@ func main() {
 	locate.CollectObjects()
 	// 开启心跳检测
 	go heartbeat.StartHeartBeat()
-	// 向 rabbitmq 注册节点信息
+	// 向 rabbitmq 注册定位节点信息
 	go locate.StartLocate()
 
 	http.HandleFunc("/objects/", objects.Handler)

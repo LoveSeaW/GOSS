@@ -36,14 +36,16 @@ func (e *encoder) Write(p []byte) (count int, err error) {
 	return len(p), nil
 }
 
+// 将 stream 流数据写入
 func (e *encoder) Flush() {
 	if len(e.cache) == 0 {
 		return
 	}
-
+	// 将数据切成4个数据片
 	shards, _ := e.encode.Split(e.cache)
 	e.encode.Encode(shards)
 	for i := range shards {
+		// 调用 数据服务的 patch /temp/, 写入数据节点的临时文件
 		e.writers[i].Write(shards[i])
 	}
 	e.cache = []byte{}
